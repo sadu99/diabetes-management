@@ -9,8 +9,8 @@ function config($routeProvider, $locationProvider, $httpProvider) {
             controller: 'loginController'
         })
         .when('/new-user', {
-          	templateUrl: 'static/views/new-user-form.html',
-            controller: 'newUserController'
+          	templateUrl: 'static/views/home.html',
+            controller: 'homeController'
         })
         .otherwise({
             redirectTo: '/'

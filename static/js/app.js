@@ -15,6 +15,9 @@ import 'babel-polyfill';
 var moduleName = "app";
 var app = angular.module(moduleName, ['ngRoute', 'ui.bootstrap', 'ngMaterial'])
     .config(config)
+    .filter('percentage', $filter => {
+        return (input, decimals) => $filter('number')(input * 100, decimals) + '%';
+    })
     .factory('userService', userService)
     .controller('newUserController', newUserController)
     .controller('loginController', loginController)
