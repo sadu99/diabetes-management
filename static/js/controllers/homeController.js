@@ -1,5 +1,6 @@
 import dialogController from './dialogController';
 import Highcharts from 'highcharts-commonjs';
+import _ from 'lodash';
 import moment from 'moment';
 
 function homeController($scope, $mdDialog, $timeout, $location, userService) {
@@ -73,8 +74,8 @@ function homeController($scope, $mdDialog, $timeout, $location, userService) {
 
     $scope.createChart($scope.chartSelection);
 
-    function resultCallback(result) {
-        $scope.result = result;
+    function resultCallback(userData, result) {
+        $scope.result = _.assign({}, userData, result);
     }
 
     userService.subscribe(resultCallback);
@@ -97,6 +98,14 @@ function homeController($scope, $mdDialog, $timeout, $location, userService) {
         return $location.path('/login');
     }
 
+    // HACK
+    let initialSend = _.cloneDeep($scope.user);
+    initialSend.date_of_birth = convertTime(initialSend.date_of_birth);
+    userService.sendRecord(initialSend);
+
+    function convertTime(date) {
+        return moment(date).format('YYYY-MM-DD');
+    }
 }
 
 export default homeController;

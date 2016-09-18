@@ -33,18 +33,27 @@
 	  <md-card>
 	    <md-card-title>
 	      <md-card-title-text>
-	        <span class="md-headline">Your Latest Record</span>
+	        <span class="md-title">Your Latest Record</span>
 	      </md-card-title-text>
 	    </md-card-title>
-	    <md-card-actions layout="row" layout-align="start center">
-	      <md-button>Action 1</md-button>
-	      <md-button>Action 2</md-button>
-	    </md-card-actions>
+	    <span style="padding: 20px;" class="md-subtitle">There is a <span style="font-weight:800;">{{result.probability | percentage}}</span> probability that <span style="font-weight:800;">you <span ng-if="result.patient_is_diabetic === '0'">do not </span></span>have diabetes based on the following information:</span>
 	    <md-card-content>
-	      <p>
-	        The titles of Washed Out's breakthrough song and the first single from Paracosm share the
-	        two most important words in Ernest Greene's musical language: feel it. It's a simple request, as well...
-	      </p>
+	      <div layout-gt-sm="row">
+            <md-input-container class="md-block" flex-gt-sm>
+              <p>Body Mass Index: <span style="font-weight:800;">{{result.mass/(result.height*result.height) | number:1}} kg/m<sup>2</sup></span></p>
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+              <p>Blood Pressure: <span style="font-weight:800;">{{result.blood_pressure}} mm Hg</span></p>
+            </md-input-container>
+          </div>
+          <div layout-gt-sm="row">
+            <md-input-container class="md-block" flex-gt-sm>
+              <p>Glucose Concentration: <span style="font-weight:800;">{{result.glucose}} mg/dL</span></p>
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+              <p>Insulin Concentration: <span style="font-weight:800;">{{result.insulin}} mu U/mL</span></p>
+            </md-input-container>
+          </div>
 	    </md-card-content>
 	  </md-card>
 		  <md-content id="bad" flex layout-padding>

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 function userService($http, $q, $location) {
 	const clients = [];
 	let isUserRegistered = false;
@@ -59,7 +61,11 @@ function userService($http, $q, $location) {
 			return $location.path('/login');
 		},
 		sendRecord: (form) => {
-			return $http.post('/api/go', form);
+			_.assign(userData, _.cloneDeep(form));
+			return $http.post('/api/go', form).then(response => {
+				clients.forEach(cb => cb(userData, response.data));
+				return response;
+			});
 		}
 	};
 }
