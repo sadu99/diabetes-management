@@ -1,0 +1,13 @@
+body {
+    background-image: url("bg.png");
+}
+
+#bad {
+    background: none;
+}
+
+#bad2 {
+    top: 50%;
+    margin-top: -100px;
+    position: fixed;
+}
