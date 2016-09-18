@@ -22,7 +22,7 @@ def date_handler(obj):
 def hello_world():
     return render_template("index.html")
 
-@app.route('/history/<userid>')
+@app.route('/api/history/<userid>')
 def api_history(userid):
     conn = psycopg2.connect(database='user_logs', user='root', host='45.79.179.152', port=26257)
     conn.set_session(autocommit=True)
@@ -43,7 +43,7 @@ def api_history(userid):
 
     return simplejson.dumps(output, default=date_handler)
 
-@app.route('/go', methods = ['POST'])
+@app.route('/api/go', methods = ['POST'])
 def api_go():
     conn = psycopg2.connect(database='user_logs', user='root', host='45.79.179.152', port=26257)
     conn.set_session(autocommit=True)
