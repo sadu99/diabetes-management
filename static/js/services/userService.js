@@ -14,9 +14,11 @@ function userService($http, $q, $location) {
 		insulin: '',
 		timestamp: '',
 	};
+	let history = [];
 
 	return {
 		getUserData: () => userData,
+		getUserHistory: () => history,
 		isUserRegistered: () => isUserRegistered,
 		subscribe: (cb) => clients.push(cb),
 		login: (email) => {
@@ -24,6 +26,7 @@ function userService($http, $q, $location) {
 
 			$http.get('/api/history/' + email).then((response) => {
 				const data = response.data;
+				history = data;
 				if (data && data.length) {
 					isUserRegistered = true;
 					userData = data[data.length - 1];
@@ -56,11 +59,7 @@ function userService($http, $q, $location) {
 			return $location.path('/login');
 		},
 		sendRecord: (form) => {
-			return $http.post('/api/go', form).then((response) => {
-				clients.forEach(cb => cb(response.data));
-			}, () => {
-
-			});
+			return $http.post('/api/go', form);
 		}
 	};
 }

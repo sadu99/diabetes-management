@@ -8,10 +8,15 @@
       </md-button>
     </div>
   </md-toolbar>
-  <form name="userForm" ng-submit="userForm.$valid && submit()">
+  <div ng-show="loadingResults" style="height:288px;padding:20px;" layout="row" layout-sm="column" layout-align="space-around">
+    <md-progress-circular style="margin-top:100px;" md-mode="indeterminate"></md-progress-circular>
+  </div>
+ <md-dialog-content style="height:288px;" layout="row" layout-sm="column" layout-align="space-around" ng-show="result">
+  <span style="padding: 20px;" class="md-subtitle">We are {{result.probability | percentage}} chance sure that you are <span ng-if="result.patient_is_diabetic === '0'">not </span>diabetic.</span>
+  </md-dialog-content>
+  <form ng-show="!loadingResults && !result" name="userForm" ng-submit="userForm.$valid && submit()">
     <md-dialog-content>
       <div class="md-dialog-content">
-        
           <div layout-gt-sm="row" ng-if="!isUserRegistered">
             <md-input-container class="md-block" flex-gt-sm>
               <label>First name</label>

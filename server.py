@@ -97,6 +97,30 @@ def api_go():
     output_response = prediction.get_response(input_params)
     return simplejson.dumps(output_response, default=date_handler)
 
+# @app.route('/api/record/<userid>')
+# def api_latest_record(userid):
+#     conn = psycopg2.connect(database='user_logs', user='root', host='45.79.179.152', port=26257)
+#     conn.set_session(autocommit=True)
+#     cur = conn.cursor()
+
+#     cur.execute("SELECT email, first_name, last_name, phone_number, mass, height, date_of_birth, blood_pressure, glucose, insulin, timestamp FROM history WHERE email=%s ORDER BY timestamp DESC LIMIT 1", (userid,))
+#     rows = cur.fetchall()
+
+#     if not len(rows):
+#         return simplejson.dumps({}, default=date_handler)
+
+#     result = rows[0]
+
+#     cur.close()
+#     conn.close()
+
+#     # Get response from Azure Machine Learning Model
+#     input_params = create_input_params_obj(float(result["glucose"]), float(result["blood_pressure"]), float(result["insulin"]), float(result["mass"])/(float(result["height"])**2), datetime.strptime(result["date_of_birth"], '%Y-%M-%d'))
+#     output_response = prediction.get_response(input_params)
+
+#     result["result"] = output_response
+#     return simplejson.dumps(result, default=date_handler)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,7 +1,7 @@
 <md-toolbar class="md-hue-2">
 	<div class="md-toolbar-tools">
         <h2>
-          <span><span ng-if="!result">Welcome {{user.first_name}}</span> <span ng-if="result">, we are {{result.probability | percentage}} chance sure that you are <span ng-if="result.patient_is_diabetic === '0'">not </span>diabetic</span></span>
+          <span>Welcome {{user.first_name}}</span>
         </h2>
         <span flex></span>
         <md-button ng-click="logout()" aria-label="Log Out">
@@ -12,9 +12,45 @@
         </md-button>
 	</div>
 </md-toolbar>
-
-<md-content id="bad" flex layout-padding>
-	<md-button class="md-fab" aria-label="Add" ng-click="addNewRecord()">
-		<i class="material-icons md-primary">note_add</i>
-	</md-button>
+<md-content id="bad" class="md-padding" layout-xs="column" layout="row">
+	<div flex-xs flex-gt-xs="50" layout="column">
+	  <md-card style="padding: 20px">
+	  		<md-card-header-text >
+	        <span class="md-title">Your Recent History</span>
+	      </md-card-header-text>
+	  	  <md-input-container class="md-block" flex-gt-sm>
+	        <label>Metric</label>
+	        <md-select ng-change="createChart(chartSelection)" ng-model="chartSelection">
+	          <md-option ng-repeat="(key, data) in config" value="{{key}}">
+	            {{data.yAxis}}
+	          </md-option>
+	        </md-select>
+	      </md-input-container>
+	    <div id="history-container" style="min-width: 500px; height: 400px; margin: 0 auto"></div>
+	  </md-card>
+	</div>
+	<div flex-xs flex-gt-xs="50" layout="column">
+	  <md-card>
+	    <md-card-title>
+	      <md-card-title-text>
+	        <span class="md-headline">Your Latest Record</span>
+	      </md-card-title-text>
+	    </md-card-title>
+	    <md-card-actions layout="row" layout-align="start center">
+	      <md-button>Action 1</md-button>
+	      <md-button>Action 2</md-button>
+	    </md-card-actions>
+	    <md-card-content>
+	      <p>
+	        The titles of Washed Out's breakthrough song and the first single from Paracosm share the
+	        two most important words in Ernest Greene's musical language: feel it. It's a simple request, as well...
+	      </p>
+	    </md-card-content>
+	  </md-card>
+		  <md-content id="bad" flex layout-padding>
+		  <md-button style="float:right;" class="md-fab" aria-label="Add" ng-click="addNewRecord()">
+					<i class="material-icons md-primary">note_add</i>
+				</md-button>
+			</md-content>
+	</div>
 </md-content>

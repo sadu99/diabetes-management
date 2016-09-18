@@ -1,5 +1,11 @@
+html, body {
+    margin: 0;
+    height: 100%;
+}
+
 body {
     background-image: url("bg.png");
+    background-repeat: repeat-y;
 }
 
 #bad {

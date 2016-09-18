@@ -1,7 +1,77 @@
 import dialogController from './dialogController';
+import Highcharts from 'highcharts-commonjs';
+import moment from 'moment';
 
 function homeController($scope, $mdDialog, $timeout, $location, userService) {
-    $scope.user = userService.getUserData();
+    let history = userService.getUserHistory();
+    $scope.user = history.length ? history[history.length - 1] : userService.getUserData();
+
+    function convertTimestampToUnix(timestamp) {
+        return moment(timestamp, "YYYY-MM-DDTHH:mm:ss").valueOf();
+    }
+    $scope.config = {
+        blood_pressure: {
+            yAxis: 'Blood Pressure (mm Hg)',
+            unit: 'mm Hg',
+            mappingFunc: data => {
+                return [convertTimestampToUnix(data.timestamp), parseInt(data.blood_pressure, 10)];
+            }
+        },
+        glucose: {
+            yAxis: 'Glucose Concentration (mg/dL)',
+            unit: 'mg/dL',
+            mappingFunc: data => {
+                return [convertTimestampToUnix(data.timestamp), data.glucose];
+            }
+        },
+        insulin: {
+            yAxis: 'Insulin Concentration (mu U/mL)',
+            unit: 'mu U/mL',
+            mappingFunc: data => {
+                return [convertTimestampToUnix(data.timestamp), data.insulin];
+            }
+        },
+        BMI: {
+            yAxis: 'Body Mass Index (kg/m^2)',
+            unit: 'kg/m^2',
+            mappingFunc: data => {
+                return [convertTimestampToUnix(data.timestamp), data.mass/(data.height^2)];
+            }
+        }
+    };
+    $scope.chartSelection = 'glucose';
+    let chart;
+    $scope.createChart = (type) => {
+        if (chart) {
+            Highcharts.destroy(chart);
+            chart = null;
+        }
+        chart = Highcharts.createChart(document.getElementById('history-container'), {
+            title: {
+                text: ''
+            },
+            xAxis: {
+                type: 'datetime'
+            },
+            yAxis: {
+                title: {
+                    text: $scope.config[type].yAxis
+                }
+            },
+            tooltip: {
+                valueSuffix: $scope.config[type].unit
+            },
+            legend: {
+                enabled: false
+            },
+            series: [{
+                name: $scope.config[type].yAxis,
+                data: history.map($scope.config[type].mappingFunc)
+            }]
+        });
+    }
+
+    $scope.createChart($scope.chartSelection);
 
     function resultCallback(result) {
         $scope.result = result;
