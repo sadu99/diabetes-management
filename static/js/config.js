@@ -4,6 +4,10 @@ function config($routeProvider, $locationProvider, $httpProvider) {
             templateUrl: 'static/views/home.html',
             controller: 'homeController'
         })
+        .when('/login', {
+            templateUrl: 'static/views/login.html',
+            controller: 'loginController'
+        })
         .when('/new-user', {
           	templateUrl: 'static/views/new-user-form.html',
             controller: 'newUserController'

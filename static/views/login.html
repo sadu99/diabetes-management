@@ -1,0 +1,21 @@
+<md-content>
+  <div layout="row" layout-padding layout-wrap layout-margin ng-cloak layout-align="space-around">
+    <md-card style="width:500px;" md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
+      <md-toolbar class="md-hue-2">
+        <div class="md-toolbar-tools">
+          <h2>
+            <span>Welcome to Diabetes Manager</span>
+          </h2>
+        </div>
+      </md-toolbar>
+      <form name="login" ng-submit="login.$valid && submit()" layout-gt-sm="row">
+        <md-input-container class="md-block" flex-gt-sm="90">
+          <label>Email Address</label>
+          <input type="email" required ng-model="email">
+        </md-input-container>
+
+        <md-button style="padding-top: 20px" class="md-icon-button" flex-gt-sm="10" type="submit"><i class="material-icons">arrow_forward</i></md-button>
+      </form>
+    </md-card>
+  </div>
+</md-content>

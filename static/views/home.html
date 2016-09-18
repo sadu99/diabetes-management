@@ -1,3 +1,20 @@
-<div>
-  <p>We are now inside angular {{data}}</p>
-</div>
+<md-toolbar class="md-hue-2">
+	<div class="md-toolbar-tools">
+		<md-button aria-label="Log Out">
+          Log Out
+        </md-button>
+        <h2>
+          <span>Welcome {{user.first_name}}</span>
+        </h2>
+        <span flex></span>
+        <md-button class="md-icon-button" aria-label="Settings">
+        	<i class="material-icons">settings</i>
+        </md-button>
+	</div>
+</md-toolbar>
+
+<md-content flex layout-padding>
+	<md-button class="md-fab" aria-label="Add" ng-click="addNewRecord()">
+		<i class="material-icons md-primary">note_add</i>
+	</md-button>
+</md-content>

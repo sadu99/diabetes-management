@@ -1,0 +1,74 @@
+<md-dialog aria-label="Mango (Fruit)">
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2>New Record for {{form.first_name + " " + form.last_name}}</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="cancel()">
+        <i class="material-icons md-accent">close</i>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <form name="userForm" ng-submit="userForm.$valid && $scope.submit()">
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        
+          <div layout-gt-sm="row" ng-if="!isUserRegistered">
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>First name</label>
+              <input required ng-model="form.first_name">
+            </md-input-container>
+
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>Last name</label>
+              <input ng-model="form.last_name">
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>Email</label>
+              <input required ng-model="form.email">
+            </md-input-container>
+          </div>
+
+          <div layout-gt-sm="row" ng-if="!isUserRegistered">
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>Birth Date</label>
+              <md-datepicker required ng-model="form.date_of_birth"></md-datepicker>
+            </md-input-container>
+            
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>Phone Number</label>
+              <input ng-model="form.phone_number">
+            </md-input-container>
+          </div>
+
+          <div layout-gt-sm="row">
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>Mass (kg)</label>
+              <input required ng-model="form.mass">
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>Height (cm)</label>
+              <input required ng-model="form.height">
+            </md-input-container>
+          </div>
+
+          <div layout-gt-sm="row">
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>Blood Pressure</label>
+              <input required ng-model="form.blood_pressure">
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>Glucose Concentration</label>
+              <input required ng-model="form.glucose">
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>Insulin Concentration</label>
+              <input required ng-model="form.insulin">
+            </md-input-container>
+          </div>
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+        <md-button class="md-primary" type="submit">Submit</md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
