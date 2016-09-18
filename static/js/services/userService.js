@@ -1,4 +1,5 @@
-function userService($http, $q) {
+function userService($http, $q, $location) {
+	const clients = [];
 	let isUserRegistered = false;
 	let userData = {
 		email: '',
@@ -17,6 +18,7 @@ function userService($http, $q) {
 	return {
 		getUserData: () => userData,
 		isUserRegistered: () => isUserRegistered,
+		subscribe: (cb) => clients.push(cb),
 		login: (email) => {
 			const deferred = $q.defer();
 
@@ -36,8 +38,29 @@ function userService($http, $q) {
 			});
 			return deferred.promise;
 		},
+		logout: () => {
+			userData = {
+				email: '',
+				first_name: '',
+				last_name: '',
+				phone_number: '',
+				mass: '',
+				height: '',
+				date_of_birth: '',
+				blood_pressure: '',
+				glucose: '',
+				insulin: '',
+				timestamp: '',
+			};
+
+			return $location.path('/login');
+		},
 		sendRecord: (form) => {
-			return $http.post('/api/go', form);
+			return $http.post('/api/go', form).then((response) => {
+				clients.forEach(cb => cb(response.data));
+			}, () => {
+
+			});
 		}
 	};
 }

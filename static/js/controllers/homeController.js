@@ -1,9 +1,15 @@
 import dialogController from './dialogController';
 
-function homeController($scope, $mdDialog, $location, userService) {
+function homeController($scope, $mdDialog, $timeout, $location, userService) {
     $scope.user = userService.getUserData();
 
-    $scope.addNewRecord = function(ev) {
+    function resultCallback(result) {
+        $scope.result = result;
+    }
+
+    userService.subscribe(resultCallback);
+
+    $scope.addNewRecord = (ev) => {
         $mdDialog.show({
             controller: dialogController,
             templateUrl: 'static/views/newRecord.tmpl.html',
@@ -13,8 +19,10 @@ function homeController($scope, $mdDialog, $location, userService) {
             fullscreen: false
         });
     };
+
+    $scope.logout = () => userService.logout();
     if ($location.path() === '/new-user') {
-        $scope.addNewRecord();
+        $timeout(() => $scope.addNewRecord(), 100);
     } else if (!userService.isUserRegistered()) {
         return $location.path('/login');
     }

@@ -9,8 +9,8 @@ function dialogController($scope, $mdDialog, userService) {
     $scope.submit = () => {
         let submittedForm = _.cloneDeep($scope.form);
         submittedForm.date_of_birth = convertTime(submittedForm.date_of_birth);
-        userService.sendRecord(submittedForm);
         $mdDialog.hide();
+        userService.sendRecord(submittedForm);
     }
 
     function convertTime(date) {
