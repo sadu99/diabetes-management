@@ -1,7 +1,6 @@
-from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
-import sqlalchemy.orm
-from cockroachdb.sqlalchemy import run_transaction
+from flask import Flask, render_template, request
+import psycopg2
+import simplejson
 
 class CustomFlask(Flask):
     jinja_options = Flask.jinja_options.copy()
@@ -15,36 +14,9 @@ class CustomFlask(Flask):
     ))
 
 app = CustomFlask(__name__)
-app.config.from_pyfile('server.cfg')
-db = SQLAlchemy(app)
-sessionmaker = sqlalchemy.orm.sessionmaker(db.engine)
 
-class Log(db.Model):
-    __tablename__ = 'user_logs'
-    email = db.Column('email', db.String, primary_key=True)
-    first_name = db.Column(db.String)
-    last_name = db.Column(db.String)
-    phone_number = db.Column(db.String)
-    mass = db.Column(db.Float)
-    height = db.Column(db.Float)
-    date_of_birth = db.Column(db.DateTime)
-    blood_pressure = db.Column(db.Float)
-    glucose = db.Column(db.Float)
-    insulin = db.Column(db.Float)
-    timestamp = db.Column(db.DateTime)
-
-    def __init__(self, email, first_name, last_name, phone_number, mass, height, date_of_birth, blood_pressure, glucose, insulin, timestamp):
-        self.email = email
-        self.first_name = first_name
-        self.last_name = last_name
-        self.phone_number = phone_number
-        self.mass = mass
-        self.height = height
-        self.date_of_birth = date_of_birth
-        self.blood_pressure = blood_pressure
-        self.glucose = glucose
-        self.insulin = insulin
-        self.timestamp = timestamp
+def date_handler(obj):
+    return obj.isoformat() if hasattr(obj, 'isoformat') else obj
 
 @app.route('/')
 def hello_world():
@@ -52,15 +24,54 @@ def hello_world():
 
 @app.route('/history/<userid>')
 def api_history(userid):
-    def callback(session):
-        return session.query(Log).order_by(Log.timestamp.desc()).all()
-    return run_transaction(sessionmaker, callback)
+    conn = psycopg2.connect(database='user_logs', user='root', host='45.79.179.152', port=26257)
+    conn.set_session(autocommit=True)
+    cur = conn.cursor()
+
+    cur.execute("SELECT email, first_name, last_name, phone_number, mass, height, date_of_birth, blood_pressure, glucose, insulin, timestamp FROM history WHERE email=%s ORDER BY timestamp asc", (userid,))
+    rows = cur.fetchall()
+
+    columns = ('email', 'first_name', 'last_name', 'phone_number', 'mass', 'height', 'date_of_birth', 'blood_pressure', 'glucose', 'insulin', 'timestamp')
+
+    output = []
+    for row in rows:
+        output.append(dict(zip(columns, row)))
+
+    # Close the database connection.
+    cur.close()
+    conn.close()
+
+    return simplejson.dumps(output, default=date_handler)
 
 @app.route('/go', methods = ['POST'])
 def api_go():
-    # assume json data is sanity-checked and clean
-    return "Data: " + json.dumps(request.json)
+    conn = psycopg2.connect(database='user_logs', user='root', host='45.79.179.152', port=26257)
+    conn.set_session(autocommit=True)
+    cur = conn.cursor()
 
+    data = request.json
+    email = data["email"]
+    first_name = data["first_name"]
+    last_name = data["last_name"]
+    phone_number = data["phone_number"]
+    mass = float(data["mass"])
+    height = float(data["height"])
+    date_of_birth = data["date_of_birth"]
+    blood_pressure = float(data["blood_pressure"])
+    glucose = float(data["glucose"])
+    insulin = float(data["insulin"])
+    timestamp = data["timestamp"]
+
+    cur.execute("INSERT INTO history (email, first_name, last_name, phone_number, mass, height, date_of_birth, blood_pressure, glucose, insulin, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+     (email, first_name, last_name, phone_number, mass, height, date_of_birth, blood_pressure, glucose, insulin, timestamp,))
+
+    # Close the database connection.
+    cur.close()
+    conn.close()
+
+    # TODO get api result here
+
+    return "Result: "
 
 if __name__ == '__main__':
     app.run(debug=True)
