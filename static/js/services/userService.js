@@ -1,4 +1,5 @@
-function userService($http) {
+function userService($http, $q) {
+	let isUserRegistered = false;
 	let userData = {
 		email: '',
 		first_name: '',
@@ -15,7 +16,29 @@ function userService($http) {
 
 	return {
 		getUserData: () => userData,
-		isUserRegistered: () => false,
+		isUserRegistered: () => isUserRegistered,
+		login: (email) => {
+			const deferred = $q.defer();
+
+			$http.get('/api/history/' + email).then((response) => {
+				const data = response.data;
+				if (data && data.length) {
+					isUserRegistered = true;
+					userData = data[data.length - 1];
+					return deferred.resolve(response.data);
+				}
+				isUserRegistered = false;
+				userData.email = email;
+				deferred.reject('userNotFound');
+			}, (response) => {
+				isUserRegistered = false;
+				return deferred.reject('serverError');
+			});
+			return deferred.promise;
+		},
+		sendRecord: (form) => {
+			return $http.post('/api/go', form);
+		}
 	};
 }
 
