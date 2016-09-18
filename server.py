@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request
-import psycopg2
-import simplejson
 from datetime import date, datetime
+from message import text
+import psycopg2
+import math
+import simplejson
 import prediction
 
 class CustomFlask(Flask):
@@ -95,8 +97,11 @@ def api_go():
     # Get response from Azure Machine Learning Model
     input_params = create_input_params_obj(glucose, blood_pressure, insulin, mass/(height**2), date_of_birth)
     output_response = prediction.get_response(input_params)
-    return simplejson.dumps(output_response, default=date_handler)
 
+    # Send text message to user 
+    text(first_name, phone_number, '%.1f' % round((float(output_response["probability"])*100), 1), output_response["patient_is_diabetic"])
+
+    return simplejson.dumps(output_response, default=date_handler)
 
 if __name__ == '__main__':
     app.run(debug=True)
