@@ -12,7 +12,7 @@
     <md-progress-circular style="margin-top:100px;" md-mode="indeterminate"></md-progress-circular>
   </div>
  <md-dialog-content style="height:288px;" layout="row" layout-sm="column" layout-align="space-around" ng-show="result">
-  <span style="padding: 20px;" class="md-subtitle">We are {{result.probability | percentage}} chance sure that you are <span ng-if="result.patient_is_diabetic === '0'">not </span>diabetic.</span>
+  <span style="padding: 20px;" class="md-subtitle">There is a <span style="font-weight:800;">{{result.probability | percentage}}</span> probability that <span style="font-weight:800;">you <span ng-if="result.patient_is_diabetic === '0'">do not </span></span>have diabetes based on the following information:</span>
   </md-dialog-content>
   <form ng-show="!loadingResults && !result" name="userForm" ng-submit="userForm.$valid && submit()">
     <md-dialog-content>

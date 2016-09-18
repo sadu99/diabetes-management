@@ -99,7 +99,7 @@ def api_go():
     output_response = prediction.get_response(input_params)
 
     # Send text message to user 
-    # text(first_name, phone_number, '%.1f' % round((float(output_response["probability"])*100), 1), output_response["patient_is_diabetic"])
+    text(first_name, phone_number, '%.1f' % round((float(output_response["probability"])*100), 1), output_response["patient_is_diabetic"])
 
     return simplejson.dumps(output_response, default=date_handler)
 
