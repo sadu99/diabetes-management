@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
 import psycopg2
 import simplejson
+from datetime import date, datetime
+import prediction
 
 class CustomFlask(Flask):
     jinja_options = Flask.jinja_options.copy()
@@ -15,8 +17,29 @@ class CustomFlask(Flask):
 
 app = CustomFlask(__name__)
 
+def get_age(born):
+    today = date.today()
+    return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+
 def date_handler(obj):
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
+
+
+def create_input_params_obj(glucose, blood_pressure, insulin, BMI, date_of_birth):
+    params = {
+        "Inputs": {
+                "input1":
+                [{
+                    'glucose': glucose,   
+                    'pressure': blood_pressure,   
+                    'insulin': insulin,   
+                    'BMI': BMI,   
+                    'age': get_age(date_of_birth),   
+                    }],
+        },
+        "GlobalParameters":  {}
+    }
+    return params 
 
 @app.route('/')
 def hello_world():
@@ -56,11 +79,11 @@ def api_go():
     phone_number = data["phone_number"]
     mass = float(data["mass"])
     height = float(data["height"])
-    date_of_birth = data["date_of_birth"]
+    date_of_birth = datetime.strptime(data["date_of_birth"], '%Y-%M-%d')
     blood_pressure = float(data["blood_pressure"])
     glucose = float(data["glucose"])
     insulin = float(data["insulin"])
-    timestamp = data["timestamp"]
+    timestamp = datetime.now()
 
     cur.execute("INSERT INTO history (email, first_name, last_name, phone_number, mass, height, date_of_birth, blood_pressure, glucose, insulin, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
      (email, first_name, last_name, phone_number, mass, height, date_of_birth, blood_pressure, glucose, insulin, timestamp,))
@@ -69,9 +92,11 @@ def api_go():
     cur.close()
     conn.close()
 
-    # TODO get api result here
+    # Get response from Azure Machine Learning Model
+    input_params = create_input_params_obj(glucose, blood_pressure, insulin, mass/(height**2), date_of_birth)
+    output_response = prediction.get_response(input_params)
+    return simplejson.dumps(output_response, default=date_handler)
 
-    return "Result: "
 
 if __name__ == '__main__':
     app.run(debug=True)
